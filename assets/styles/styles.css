@@ -18,3 +18,11 @@ table {
         max-width: 1024px;
     }
 }
+
+.jumbotron {
+    background-image: url("../images/small_college.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  color: white;
+  padding-bottom: 20px;
+}

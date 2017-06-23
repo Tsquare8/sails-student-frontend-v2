@@ -1,23 +1,23 @@
 (function(){
 
   //function to delete record by settin id on form and then submitting the form
-  //sets value of student id in hidden delete form and submits form
+  //sets value of major_id id in hidden delete form and submits form
   //not completely ideal but wanted to take advantage of flash messages in sails
   function deleteRecord(record_id){
-    $("#deleteform input[name=student_id]").val(record_id);
+    $("#deleteform input[name=major_id]").val(record_id);
     $("#deleteform").submit();
   }
 
-  function getStudent(record_id){
-    return $.get("http://localhost:1337/student/" + record_id, function(data){
-      console.log("got student");
+  function getMajor(record_id){
+    return $.get("http://localhost:1337/major/" + record_id, function(data){
+      console.log("got major");
     })
   }
 
-$(function(){
+  $(function(){
 
-//add copy, csv, etc. buttons, the ability to scroll and reorder columns
-    $("#studentTable").DataTable( {
+    //add copy, csv, etc. buttons, the ability to scroll and reorder columns
+    $("#majorTable").DataTable( {
         dom: 'Bfrtip',
         buttons: [
             'copy', 'csv', 'excel', 'pdf', 'print'
@@ -27,58 +27,42 @@ $(function(){
     });
 
 //validate edits for specific fields and provide error messages
-  var validator = $("#manageStudentForm").validate({
+  var validator = $("#manageMajorForm").validate({
       // debug: true,
       errorClass: "text-danger",
       rules: {
-        first_name: {
-          required: true,
-          minlength: 2
-        },
-        last_name: {
-          required: true,
-          minlength: 2
-        },
-        start_date: {
-          required: true,
-          dateISO: true
+        major: {
+          required: true
         },
         sat: {
+          required: true,
           maxlength: 4
         }
       },
       messages: {
-        first_name: {
-          required: "First name is a required field",
-          minlength: "First name needs to have at least 2 characters"
-        },
-        last_name: {
-          required: "Last name is a required field",
-          minlength: "First name needs to have at least 2 characters"
-        },
-        start_date: {
-          required: "Start_date is a required field"
+        major: {
+          required: "Student ID is required"
         },
         sat: {
+          required: "Class ID is required",
           maxlength: "SAT is a maximum of 4 characters"
         }
       }
     });
-
-  // $(function(){
+    
     //add code from frontend v1
     //initialize variables for items in the DOM we will work with
-    let manageStudentForm = $("#manageStudentForm");
-    let addStudentButton = $("#addStudentButton");
+    let manageMajorForm = $("#manageMajorForm");
+    let addMajorButton = $("#addMajorButton");
 
-    //add student button functionality
-    addStudentButton.click(function(){
+    //add major button functionality
+    addMajorButton.click(function(){
       //clear form so that fields do not have data in them
       $("input").val("");
-       //clear error messages
+      //clear error messages
       validator.resetForm();
-      manageStudentForm.attr("action", "/create_student");
-      manageStudentForm.dialog({
+      manageMajorForm.attr("action", "/create_major");
+      manageMajorForm.dialog({
         title: "Add Record",
         width: 700,
         modal: true,
@@ -88,22 +72,21 @@ $(function(){
           },
           "Submit": function() {
             //function to delete record
-            manageStudentForm.submit()
+            manageMajorForm.submit()
           }
         }
       });
-    });
-      
+    })
 
-  	$("#studentTable").on("click", "#editButton", function(e){
-      let recordId = $(this).data("studentid")
+  	$("#majorTable").on("click", "#editButton", function(e){
+      let recordId = $(this).data("majorid")
       validator.resetForm();
-      manageStudentForm.find("input[name=student_id]").val(recordId);
-      manageStudentForm.attr("action", "/update_student");
-      let student = getStudent(recordId);
+      manageMajorForm.find("input[name=major_id]").val(recordId);
+      manageMajorForm.attr("action", "/update_major");
+      let major = getMajor(recordId);
 
-      //populate form when api call is done (after we get student to edit)
-      student.done(function(data){
+      //populate form when api call is done (after we get major to edit)
+      major.done(function(data){
         $.each(data, function(name, val){
             var $el = $('[name="'+name+'"]'),
                 type = $el.attr('type');
@@ -121,7 +104,7 @@ $(function(){
         });
       })
 
-      manageStudentForm.dialog({
+      manageMajorForm.dialog({
         title: "Add Record",
         width: 700,
         modal: true,
@@ -131,15 +114,15 @@ $(function(){
           },
           Submit: function() {
             //function to delete record
-            manageStudentForm.submit()
+            manageMajorForm.submit()
           }
         }
       });
     })
 
 
-    $("#studentTable").on("click", "#deleteButton", function(e){
-      let recordId = $(this).data("studentid")
+    $("#majorTable").on("click", "#deleteButton", function(e){
+      let recordId = $(this).data("majorid")
       $("#deleteConfirm").dialog({
         title: "Confirm Delete",
         modal: true,
@@ -147,7 +130,7 @@ $(function(){
           Cancel: function() {
             $( this ).dialog( "close" );
           },
-          "Delete Student": function() {
+          "Delete Major": function() {
             //function to delete record
             deleteRecord(recordId);
           }

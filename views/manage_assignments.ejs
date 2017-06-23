@@ -1,0 +1,74 @@
+<ol class="breadcrumb">
+    <li>Home</a></li>
+    <li class="active">Assignments</a></li>
+</ol>
+
+<br/>
+
+<%- partial ('partials/statusmessage.ejs') %>
+
+<h2>Manage Assignments</h2>
+<button class="btn btn-success" id="addAssignmentButton">Add Assignment</button>
+<table class="table table-striped table-bordered" id="assignmentTable" style="width:100%">
+  <thead>
+    <tr>
+      <th>Assignment ID</th>
+      <th>Student ID</th>
+      <th>Assignment Number</th>
+      <th>Grade ID</th>
+      <th>Class ID</th>
+      <th>Admin: Edit/Delete</th>
+    </tr>
+  </thead>
+  <tbody>
+  <% if(typeof assignments != "undefined" && assignments.length > 0){ %>
+    <% assignments.forEach(function(assignment){ %>
+      <tr>
+        <td><%= assignment.assginment_id %></td>
+        <td><%= assignment.student_id %></td>
+        <td><%= assignment.assignment_nbr %></td>
+        <td><%= assignment.grade_id %></td>
+        <td><%= assignment.class_id %></td>
+        <td class="text-center">
+          <button class="btn btn-primary" id="editButton" data-assignmentid="<%= assignment.assignment_id %>">edit</button>
+          <button class="btn btn-danger" id="deleteButton" data-assignmentid="<%= assignment.assignment_id %>">delete</button>
+        </td>
+      </tr>
+    <% }) %>
+  <% } %>
+  </tbody>
+</table>
+
+<div style="display: none;" id="deleteConfirm">Are you sure you want to delete this record?</div>
+
+<form action="/delete_assignment" method="POST" style="display: none;" id="deleteform">
+  <input type="hidden" name="assignment_id" value="eric">
+</form>
+
+<form style="display: none;" action="" method="POST" class="form-horizontal" id="manageAssignmentForm">
+  <input type="hidden" name="assignment_id">
+  <div class="form-group">
+    <label for="student_id" class="col-sm-2 control-label">Student ID</label>
+    <div class="col-sm-10">
+      <input type="text" class="form-control" id="student_id" name="student_id" placeholder="Student ID" required>
+    </div>
+  </div>
+  <div class="form-group">
+    <label for="assignment_nbr" class="col-sm-2 control-label">Assginment Number</label>
+    <div class="col-sm-10">
+      <input type="text" class="form-control" id="assignment_nbr" name="assignment_nbr"  placeholder="Assignment Number" required>
+    </div>
+  </div>
+  <div class="form-group">
+    <label for="grade_id" class="col-sm-2 control-label">Grade ID</label>
+    <div class="col-sm-10">
+      <input type="text" class="form-control" id="grade_id" name="grade_id" placeholder="Grade ID" required>
+    </div>
+  </div>
+  <div class="form-group">
+    <label for="class_Id" class="col-sm-2 control-label">Class ID</label>
+    <div class="col-sm-10">
+      <input type="text" class="form-control" id="class_id" name="class_id" placeholder="Class ID">
+    </div>
+  </div>
+</form>

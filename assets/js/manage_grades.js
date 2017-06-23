@@ -1,23 +1,23 @@
 (function(){
 
   //function to delete record by settin id on form and then submitting the form
-  //sets value of student id in hidden delete form and submits form
+  //sets value of grade_id id in hidden delete form and submits form
   //not completely ideal but wanted to take advantage of flash messages in sails
   function deleteRecord(record_id){
-    $("#deleteform input[name=student_id]").val(record_id);
+    $("#deleteform input[name=grade_id]").val(record_id);
     $("#deleteform").submit();
   }
 
-  function getStudent(record_id){
-    return $.get("http://localhost:1337/student/" + record_id, function(data){
-      console.log("got student");
+  function getGrade(record_id){
+    return $.get("http://localhost:1337/grade/" + record_id, function(data){
+      console.log("got grade");
     })
   }
 
-$(function(){
+  $(function(){
 
-//add copy, csv, etc. buttons, the ability to scroll and reorder columns
-    $("#studentTable").DataTable( {
+    //add copy, csv, etc. buttons, the ability to scroll and reorder columns
+    $("#gradeTable").DataTable( {
         dom: 'Bfrtip',
         buttons: [
             'copy', 'csv', 'excel', 'pdf', 'print'
@@ -27,58 +27,34 @@ $(function(){
     });
 
 //validate edits for specific fields and provide error messages
-  var validator = $("#manageStudentForm").validate({
+  var validator = $("#manageGradeForm").validate({
       // debug: true,
       errorClass: "text-danger",
       rules: {
-        first_name: {
-          required: true,
-          minlength: 2
-        },
-        last_name: {
-          required: true,
-          minlength: 2
-        },
-        start_date: {
-          required: true,
-          dateISO: true
-        },
-        sat: {
-          maxlength: 4
+        grade: {
+          required: true
         }
       },
       messages: {
-        first_name: {
-          required: "First name is a required field",
-          minlength: "First name needs to have at least 2 characters"
-        },
-        last_name: {
-          required: "Last name is a required field",
-          minlength: "First name needs to have at least 2 characters"
-        },
-        start_date: {
-          required: "Start_date is a required field"
-        },
-        sat: {
-          maxlength: "SAT is a maximum of 4 characters"
+        grade: {
+          required: "Grade is required"
         }
       }
     });
 
-  // $(function(){
     //add code from frontend v1
     //initialize variables for items in the DOM we will work with
-    let manageStudentForm = $("#manageStudentForm");
-    let addStudentButton = $("#addStudentButton");
+    let manageGradeForm = $("#manageGradeForm");
+    let addGradeButton = $("#addGradeButton");
 
-    //add student button functionality
-    addStudentButton.click(function(){
+    //add grade button functionality
+    addGradeButton.click(function(){
       //clear form so that fields do not have data in them
       $("input").val("");
-       //clear error messages
+      //clear error messages
       validator.resetForm();
-      manageStudentForm.attr("action", "/create_student");
-      manageStudentForm.dialog({
+      manageGradeForm.attr("action", "/create_grade");
+      manageGradeForm.dialog({
         title: "Add Record",
         width: 700,
         modal: true,
@@ -88,22 +64,21 @@ $(function(){
           },
           "Submit": function() {
             //function to delete record
-            manageStudentForm.submit()
+            manageGradeForm.submit()
           }
         }
       });
-    });
-      
+    })
 
-  	$("#studentTable").on("click", "#editButton", function(e){
-      let recordId = $(this).data("studentid")
+  	$("#gradeTable").on("click", "#editButton", function(e){
+      let recordId = $(this).data("gradeid")
       validator.resetForm();
-      manageStudentForm.find("input[name=student_id]").val(recordId);
-      manageStudentForm.attr("action", "/update_student");
-      let student = getStudent(recordId);
+      manageGradeForm.find("input[name=grade_id]").val(recordId);
+      manageGradeForm.attr("action", "/update_grade");
+      let grade = getGrade(recordId);
 
-      //populate form when api call is done (after we get student to edit)
-      student.done(function(data){
+      //populate form when api call is done (after we get grade to edit)
+      grade.done(function(data){
         $.each(data, function(name, val){
             var $el = $('[name="'+name+'"]'),
                 type = $el.attr('type');
@@ -121,7 +96,7 @@ $(function(){
         });
       })
 
-      manageStudentForm.dialog({
+      manageGradeForm.dialog({
         title: "Add Record",
         width: 700,
         modal: true,
@@ -131,15 +106,15 @@ $(function(){
           },
           Submit: function() {
             //function to delete record
-            manageStudentForm.submit()
+            manageGradeForm.submit()
           }
         }
       });
     })
 
 
-    $("#studentTable").on("click", "#deleteButton", function(e){
-      let recordId = $(this).data("studentid")
+    $("#gradeTable").on("click", "#deleteButton", function(e){
+      let recordId = $(this).data("gradeid")
       $("#deleteConfirm").dialog({
         title: "Confirm Delete",
         modal: true,
@@ -147,7 +122,7 @@ $(function(){
           Cancel: function() {
             $( this ).dialog( "close" );
           },
-          "Delete Student": function() {
+          "Delete Grade": function() {
             //function to delete record
             deleteRecord(recordId);
           }
